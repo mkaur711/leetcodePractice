@@ -7,24 +7,23 @@ public:
             freqMap[num]++;
         }
 
-        // Step 2: Create buckets to store numbers with the same frequency
-        int n = nums.size();
-        vector<vector<int>> buckets(n + 1);
+        // Step 2: Use a min-heap to keep the top k elements
+        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> minHeap;
+        
         for (auto& [num, freq] : freqMap) {
-            buckets[freq].push_back(num);
-        }
-
-        // Step 3: Collect the top k frequent elements
-        vector<int> result;
-        for (int i = n; i >= 0 && result.size() < k; --i) {
-            for (int num : buckets[i]) {
-                result.push_back(num);
-                if (result.size() == k) {
-                    return result;
-                }
+            minHeap.push({freq, num});
+            if (minHeap.size() > k) {
+                minHeap.pop();
             }
         }
 
+        // Step 3: Extract elements from the heap
+        vector<int> result;
+        while (!minHeap.empty()) {
+            result.push_back(minHeap.top().second);
+            minHeap.pop();
+        }
+        
         return result;
     }
 };
