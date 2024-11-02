@@ -1,12 +1,29 @@
-class SparseVector:
-    def __init__(self, nums):
-        # Store non-zero elements as a dictionary
-        self.vector = {i: val for i, val in enumerate(nums) if val != 0}
 
-    def dotProduct(self, vec):
-        # Calculate dot product with another SparseVector
+
+class SparseVector:
+    def __init__(self, nums : List[int]):
+        self.nums = []
+        for idx, num in enumerate(nums):
+            if num:
+                self.nums.append((idx, num))
+        
+    def dotProduct(self, vec: 'SparseVector') -> int:
         dot_product = 0
-        for i in self.vector:
-            if i in vec.vector:  # Only consider indices that are non-zero in both vectors
-                dot_product += self.vector[i] * vec.vector[i]
+        i = j = 0
+        
+        while i < len(self.nums) and j < len(vec.nums):
+            i_idx, i_num = self.nums[i]
+            j_idx, j_num = vec.nums[j]
+
+            if i_idx == j_idx:
+                dot_product += (i_num * j_num)
+                i += 1
+                j += 1
+            
+            if i_idx < j_idx:
+                i += 1
+            
+            elif j_idx < i_idx:
+                j += 1
+            
         return dot_product
