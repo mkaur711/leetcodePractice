@@ -1,41 +1,44 @@
 class Solution {
 public:
-    int calculate(string s) {
-        int result = 0;
-        int lastNumber = 0;
-        int currentNumber = 0;
-        char lastOperator = '+'; // Initialize to '+' so the first number is added
-
-        for (int i = 0; i < s.size(); ++i) {
-            char c = s[i];
-
-            // If the character is a digit, build the current number
-            if (isdigit(c)) {
-                currentNumber = currentNumber * 10 + (c - '0');
+    int calculate(string s){
+        stack<int> st;
+        int num=0;
+        char op='+';
+        for(int i=0;i<s.size();i++){
+            char c=s[i];
+            if(isdigit(c)){
+                num=num*10+(c-'0');
             }
-
-            // If we reach an operator or the end of the string, process the last operator
-            if ((!isdigit(c) && !isspace(c)) || i == s.size() - 1) {
-                if (lastOperator == '+') {
-                    result += lastNumber; // Add last calculated number to result
-                    lastNumber = currentNumber; // Update lastNumber to current number
-                } else if (lastOperator == '-') {
-                    result += lastNumber;
-                    lastNumber = -currentNumber;
-                } else if (lastOperator == '*') {
-                    lastNumber *= currentNumber; // Multiply last number by current number
-                } else if (lastOperator == '/') {
-                    lastNumber /= currentNumber; // Divide last number by current number
+            if(!isdigit(c) && c!=' '|| i==s.size()-1){
+                if(op=='+'){
+                    st.push(num);
                 }
-
-                // Update last operator and reset current number
-                lastOperator = c;
-                currentNumber = 0;
+                else if(op=='-'){
+                    st.push(-num);
+                }
+                else if(op=='*'){
+                    int top=st.top();
+                    st.pop();
+                    st.push(top*num);
+                }
+                else if(op=='/'){
+                    int top=st.top();
+                    st.pop();
+                    st.push(top/num);
+                }
+                op=c;
+                num=0;
             }
         }
-
-        // Add the last processed number to the result
-        result += lastNumber;
+            
+        int result=0;
+        while(!st.empty()){
+            result+=st.top();
+            st.pop();
+            
+        }
         return result;
-    }
+
+        }
+    
 };
