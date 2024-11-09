@@ -1,23 +1,31 @@
 class Solution {
 public:
-    int minProcessingTime(vector<int>& p, vector<int>& t) {
-       sort(t.begin(), t.end()); // Step 1: Sort task times in ascending order
-    sort(p.rbegin(), p.rend()); // Step 2: Sort processor times in descending order
-
-    int maxi = 0; // Initialize the maximum processing time
-    int i = 0, j = 0; // Initialize indices for tasks and processors
-
-    // Step 3: Assign tasks to processors
-    while (i < t.size()) {
-        int temp = t.size() / p.size(); // Number of tasks per processor (since each processor has 4 cores)
-        
-        // For each processor, assign the next set of tasks and update the maximum processing time
-        while (temp--) {
-            maxi = max(maxi, (p[j] + t[i++])); // Update maxi with the maximum time it takes to complete a task on the current processor core
-        }
-        
-        j++; // Move to the next processor
+    int minProcessingTime(vector<int>& processorTime, vector<int>& tasks) {
+    // Sort processor times in ascending order
+    sort(processorTime.begin(), processorTime.end());
+    
+    // Initialize a max heap to keep the tasks with the longest processing times on top
+    priority_queue<int> pq;
+    for (auto& x : tasks) {
+        pq.push(x); // Push each task duration into the priority queue
     }
 
-    return maxi; // Step 4: Return the minimum processing time needed to complete all tasks
-}};
+    int n = processorTime.size(); // Number of processors
+    int mx = 0; // Initialize variable to track the maximum processing time
+
+    // Distribute tasks to each processor
+    for (int i = 0; i < n; i++) {
+        int sz = 0; // Tracks how many tasks have been assigned to the current processor
+        
+        // Each processor should handle 4 tasks
+        while (!pq.empty() && sz < 4) {
+            // Calculate time by adding current processor's time and the longest task available
+            mx = max(mx, processorTime[i] + pq.top());
+            pq.pop(); // Remove the task from the queue
+            sz++; // Increment the task count for the current processor
+        }
+    }
+    
+    return mx; // Return the minimum time required to complete all tasks
+}
+};
