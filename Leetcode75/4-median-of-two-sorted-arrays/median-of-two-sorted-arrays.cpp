@@ -45,8 +45,7 @@ double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
         }
     }
     
-    // If no valid median is found (should not occur with valid input), throw an error
-    throw invalid_argument("Input arrays are not sorted as expected.");
+    return 0;
 }
 
 };
