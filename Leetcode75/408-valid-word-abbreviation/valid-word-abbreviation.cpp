@@ -1,22 +1,32 @@
 class Solution {
 public:
     bool validWordAbbreviation(string word,string abbr){
-        int i=0,j=0; 
-        while(i<word.length()&&j<abbr.length()){
-            if(isdigit(abbr[j])){
-                int start=j;
-                while(j<abbr.length() &&isdigit(abbr[j]))
-                {j++;}
-                int num=stoi(abbr.substr(start,j-start));
-                if(num==0 || (abbr[start] == '0' && j - start > 1)) return false;
-                i+=num;
-                }
-            else{
-                if(word[i]!=abbr[j]) return false;
-                i++;
-                j++;
+          int wordIndex = 0, abbrIndex = 0;
+    
+    while (abbrIndex < abbr.size() && wordIndex < word.size()) {
+        // If the current character in abbr is a letter
+        if (isalpha(abbr[abbrIndex])) {
+            if (word[wordIndex] != abbr[abbrIndex]) {
+                return false; // Mismatch
             }
+            wordIndex++;
+            abbrIndex++;
+        } 
+        // If the current character in abbr is a digit
+        else if (isdigit(abbr[abbrIndex])) {
+            if (abbr[abbrIndex] == '0') {
+                return false; // Leading zeros are not allowed
+            }
+            int num = 0;
+            // Parse the entire number in abbr
+            while (abbrIndex < abbr.size() && isdigit(abbr[abbrIndex])) {
+                num = num * 10 + (abbr[abbrIndex] - '0');
+                abbrIndex++;
+            }
+            wordIndex += num; // Skip characters in word
         }
-        return i==word.length()&&j==abbr.length();
+    }
+    // Check if both pointers have reached the end
+    return wordIndex == word.size() && abbrIndex == abbr.size();
     }
 };
