@@ -1,39 +1,28 @@
 class KthLargest {
-public:
-    vector<int> stream;
-    int k;
+private:
+    priority_queue<int, vector<int>, greater<int>> minHeap; // Min-heap for the k largest elements
+    int k; // The target k value
 
+public:
+    // Constructor to initialize the object with k and the initial stream
     KthLargest(int k, vector<int>& nums) {
         this->k = k;
         for (int num : nums) {
-            stream.push_back(num);
+            add(num); // Add each number to the heap
         }
-        sort(stream.begin(), stream.end());
     }
 
+    // Add a new value to the stream and return the kth largest element
     int add(int val) {
-        int index = getIndex(val);
-        // Add val to correct position
-        stream.insert(stream.begin() + index, val);
-        return stream[stream.size() - k];
-    }
+        // Add the new value to the heap
+        minHeap.push(val);
 
-private:
-    int getIndex(int val) {
-        int left = 0;
-        int right = stream.size() - 1;
-        while (left <= right) {
-            int mid = (left + right) / 2;
-            int midValue = stream[mid];
-            if (midValue == val) return mid;
-            if (midValue > val) {
-                // Go to left half
-                right = mid - 1;
-            } else {
-                // Go to right half
-                left = mid + 1;
-            }
+        // If the heap size exceeds k, remove the smallest element
+        if (minHeap.size() > k) {
+            minHeap.pop();
         }
-        return left;
+
+        // The root of the heap is the kth largest element
+        return minHeap.top();
     }
 };
