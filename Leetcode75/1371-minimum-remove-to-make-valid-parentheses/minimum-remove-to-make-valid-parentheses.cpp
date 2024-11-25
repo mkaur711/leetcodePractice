@@ -1,39 +1,44 @@
 class Solution {
 public:
     string minRemoveToMakeValid(string s) {
-     int cnt = 0; // To count unmatched '('
-        vector<char> res; // Temporary storage for result
+        int openCount = 0; // Count of unmatched opening brackets
 
-        // First pass: Append valid parentheses and characters to res
-        for (char c : s) {
-            if (c == '(') {
-                cnt++; // Increment for every '('
-                res.push_back(c); // Add '(' to result
-            } else if (c == ')') {
-                if (cnt > 0) {
-                    res.push_back(c); // Add ')' to result if there's a matching '('
-                    cnt--; // Decrement unmatched '(' count
+        // First pass: Remove invalid closing brackets ')'
+        for (int i = 0; i < s.size(); ++i) {
+            if (s[i] == '(') {
+                openCount++; // Increment count for '('
+            } else if (s[i] == ')') {
+                if (openCount > 0) {
+                    openCount--; // Match with a previous '('
+                } else {
+                    s[i] = '*'; // Mark invalid ')'
                 }
-            } else {
-                res.push_back(c); // Add all other characters
             }
         }
 
-        // Prepare the final string, filtering unmatched '(' from the end
-        string filtered_string;
-        // Iterate the result in reverse to filter unmatched '('
-        for (int i = res.size() - 1; i >= 0; i--) {
-            if (res[i] == '(' && cnt > 0) {
-                cnt--; // Skip unmatched '('
-            } else {
-                filtered_string.push_back(res[i]); // Keep valid characters
+        int closeCount = 0; // Count of unmatched closing brackets
+
+        // Second pass: Remove extra opening brackets '('
+        for (int i = s.size() - 1; i >= 0; --i) {
+            if (s[i] == ')') {
+                closeCount++; // Increment count for ')'
+            } else if (s[i] == '(') {
+                if (closeCount > 0) {
+                    closeCount--; // Match with a previous ')'
+                } else {
+                    s[i] = '*'; // Mark excess '('
+                }
             }
         }
 
-        // Reverse the filtered string
-        reverse(filtered_string.begin(), filtered_string.end());
+        // Build the final result by skipping marked characters
+        string result;
+        for (char c : s) {
+            if (c != '*') {
+                result += c; // Add only valid characters
+            }
+        }
 
-        return filtered_string; // Return the valid string
+        return result;
     }
-
 };
